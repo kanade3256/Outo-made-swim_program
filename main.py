@@ -16,3 +16,4 @@ if __name__ == "__main__":
     print("Data:", data)
 
 print("hello")
+print("world")
