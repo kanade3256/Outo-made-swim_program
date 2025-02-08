@@ -17,9 +17,34 @@
 
 ## 🚀 インストール方法
 
-### 1. クローンする
-このリポジトリをローカル環境にダウンロードします。
+# Git Fetch を活用した共同開発フロー
 
-```bash
-git clone https://github.com/username/auto-swim-program.git
-cd auto-swim-program
+このプロジェクトでは、`git fetch` を用いてリモートの変更を取得しながら、円滑な共同開発を進めます。  
+以下のコマンドを **一括実行するだけ** で、最新のコードを取得し、新しいブランチを作成し、作業完了後にプッシュする流れを自動化できます。
+
+## **1回コピーするだけでOK！**
+```sh
+# 1. リポジトリをクローン（初回のみ）
+git clone https://github.com/organization/project.git && cd project
+
+# 2. 最新の変更を取得して main を最新にする
+git fetch origin && git checkout main && git pull origin main
+
+# 3. 作業ブランチを作成（作業内容に応じてブランチ名を変更してください）
+BRANCH_NAME="feature-branch"
+git checkout -b $BRANCH_NAME
+
+# 4. コードを編集し、変更をコミット（適宜編集）
+git add . && git commit -m "Implement feature X"
+
+# 5. リモートの変更を取得して rebase（衝突がある場合は手動で解決）
+git fetch origin && git rebase origin/main
+
+# 6. 作業ブランチをリモートにプッシュ
+git push origin $BRANCH_NAME
+
+# 7. GitHub で Pull Request（PR）を作成する
+echo "Pull Request を作成してください: https://github.com/organization/project/pulls"
+
+# 8. PR 承認後、マージしたらブランチを削除
+git branch -d $BRANCH_NAME && git push origin --delete $BRANCH_NAME
