@@ -32,6 +32,13 @@
 このプロジェクトでは、`git fetch` を利用してリモートの変更を効率的に取得しながら、円滑な共同開発を実現する。  
 以下の手順を **一括実行するだけ** で、最新のコードを取得し、新しいブランチを作成、作業完了後のプッシュまで自動化できる。
 
+---
+
+##　作業ルール
+・機能実装の時は必ずブランチを分けて実装する
+- 修正の時は、’modify/修正内容’
+- 新機能の場合は、’feature/新機能名’
+
 
 ```sh
 # 1. リポジトリをクローン（初回のみ）
@@ -41,7 +48,7 @@ git clone https://github.com/kanade3256/Outo-made-swim_program.git
 git fetch origin
 
 # 3. 作業ブランチを作成（作業内容に応じてブランチ名を変更してください）
-BRANCH_NAME="feature-branch"
+#BRANCH_NAME="feature-branch"とする
 git checkout -b $BRANCH_NAME
 git switch $BRANCH_NAME
 # または
