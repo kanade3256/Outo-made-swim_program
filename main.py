@@ -8,14 +8,5 @@ def read_csv(file_path):
         data = [row for row in csv_reader]
     return header, data
 
-
-if __name__ == "__main__":
-    file_path = "data_file/test.csv"
-    header, data = read_csv(file_path)
-    print("Header:", header)
-    print("Data:", data)
-
-print("hello")
-print("world")
-print("a")
-print("s")
+header, data  = read_csv("data_file/test.csv")
+print(data[0])
