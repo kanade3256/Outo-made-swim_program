@@ -1,0 +1,20 @@
+# Python キャッシュを無視
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# 仮想環境を無視
+venv/
+.env/
+.venv/
+
+# IDE・エディタ設定ファイルを無視
+.vscode/
+.idea/
+*.sublime-workspace
+
+# ログファイルや一時ファイルを無視
+*.log
+*.tmp
+.DS_Store  # macOS の不要ファイル
