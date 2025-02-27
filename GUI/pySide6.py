@@ -9,12 +9,17 @@ class DragDropWindow(QWidget):
     def __init__(self):
         super().__init__()
 
+        # アプリケーションのスクリーンを取得
+        screen = QApplication.primaryScreen().geometry()# 画面全体のサイズ
+        screen_width = screen.width()
+        screen_height = screen.height()
+
         # ウィンドウの設定
         self.setWindowTitle("ドラッグ＆ドロップ - ファイルコピー")
-        self.setGeometry(100, 100, 400, 400)
+        self.setGeometry(screen_width/4, screen_height/4, screen_width/4*2, screen_height/4*2)
 
         # 説明用ラベル
-        self.label = QLabel("ここにファイルをドラッグ＆ドロップ", self)
+        self.label = QLabel("この下にExcelファイルをドラッグ＆ドロップ", self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # ドロップされたファイルの一覧表示用ウィジェット
@@ -35,11 +40,14 @@ class DragDropWindow(QWidget):
         self.setAcceptDrops(True)
 
         # "folder" フォルダのパス設定
-        self.target_folder = os.path.join(os.getcwd(), "folder")
+        self.target_folder = os.path.join(os.getcwd(), "data_folder")
 
-        # プログラム起動時に "folder" の中身をリセット（存在する場合は削除）
+        # プログラム起動時に "folder" の中身をリセット（ただし .gitkeep は消さない）
         if os.path.exists(self.target_folder):
             for filename in os.listdir(self.target_folder):
+                # .gitkeep は削除しない
+                if filename == ".gitkeep":
+                    continue
                 file_path = os.path.join(self.target_folder, filename)
                 try:
                     if os.path.isfile(file_path) or os.path.islink(file_path):
