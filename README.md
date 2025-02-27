@@ -66,3 +66,13 @@ git commit -m "Implement feature X"
 git push origin $BRANCH_NAME
 ```
 
+## 使用フロー
+
+1. **ExcelからCSVへの変換・結合**  
+   `scripts/excel_to_merged_csv.py` を実行すると、指定フォルダ内のExcelファイルから必要なシートを取得し、CSVファイルとして出力した後、複数のCSVを結合して `merged_output.csv` を生成します。
+
+2. **正規化・タイムフォーマット変換**  
+   `scripts/data_convert.py` を実行して、結合後のCSVファイルを読み込み、全角スペース・カタカナの半角化などのテキスト正規化やタイム表記の変換を行い、変換後のCSVファイルを出力します。
+
+3. **最終的なプログラム作成・ソート処理**  
+   `src/main.py` を実行し、正規化済みのCSVを読み込んで選手情報をオブジェクト化し、種目ごとのタイムをソートします。大会の競技プログラム作成やランキング作成などが行われる想定です。
