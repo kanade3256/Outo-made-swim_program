@@ -1,12 +1,10 @@
-import sys
-from PySide6.QtWidgets import QApplication
-from GUI.app import main as start_gui
 from module.csv_utils import read_csv_data
 from module.player_utils import create_player_from_row
 from module.player_sort_utils import sort_players_by_event, group_and_sort_all_events
+from GUI.apps import main as GUI_main
 
 def main():
-    """
+    
     # CSV を読んで 2次元リストを取得（1行目は読み捨てなどの処理は csv_utils 内で）
     data = read_csv_data("data_file/test.csv")
     # print("CSVデータ:", data)  # デバッグ用出力
@@ -60,9 +58,7 @@ def main():
     #     for rank, player in enumerate(sorted_players, start=1):
     #         time_str = player.times[(st, dist)]
     #         print(f"{rank}位: {player.name} ({time_str})")
-    """
+    
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    start_gui()
-    sys.exit(app.exec())
+    GUI_main()

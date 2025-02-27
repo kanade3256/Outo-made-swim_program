@@ -1,8 +1,10 @@
-import sys
-from PySide6.QtWidgets import QApplication, QWidget, QLabel, QPushButton, QVBoxLayout, QListWidget
+# windows/main_window.py
+import os
+from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QListWidget
 from PySide6.QtCore import Qt
-from GUI.utils.dragdrop import DragDropMixin
-from GUI.utils.file_handler import FileHandler
+
+from GUI.components.dragdrop_component import DragDropMixin
+from GUI.utils.folder_utils import prepare_folder, copy_files
 
 class MainWindow(QWidget, DragDropMixin):
     def __init__(self):
@@ -10,16 +12,13 @@ class MainWindow(QWidget, DragDropMixin):
 
         # ウィンドウの設定
         self.setWindowTitle("ドラッグ＆ドロップ - ファイルコピー")
-        self.resize(600, 400)
+        self.resize(800, 600)  # 好みのサイズに調整
 
-        # 説明用ラベル
+        # ウィジェット生成
         self.label = QLabel("この下にExcelファイルをドラッグ＆ドロップ", self)
         self.label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # ドロップされたファイルの一覧表示用ウィジェット
         self.file_list = QListWidget(self)
-
-        # OKボタン（コピーを実行）
         self.ok_button = QPushButton("OK (コピー実行)", self)
         self.ok_button.clicked.connect(self.copy_files)
 
@@ -30,25 +29,23 @@ class MainWindow(QWidget, DragDropMixin):
         layout.addWidget(self.ok_button)
         self.setLayout(layout)
 
-        # ドラッグ＆ドロップの設定
+        # ドラッグ＆ドロップの初期化
         self.init_drag_drop()
 
-        # ファイル管理インスタンス
-        self.file_handler = FileHandler()
+        # コピー先フォルダの準備
+        self.target_folder = os.path.join(os.getcwd(), "data_folder")
+        prepare_folder(self.target_folder)
+
+        # ドラッグ＆ドロップで受け取ったファイルを格納するリスト
+        self.file_paths = []
 
     def copy_files(self):
-        """ OKボタンが押されたときにファイルをコピー """
+        """OKボタンが押されたときにファイルをコピー"""
         if not self.file_paths:
             self.label.setText("コピーするファイルがありません")
             return
 
-        copied_files = self.file_handler.copy_files(self.file_paths)
+        copied_files = copy_files(self.file_paths, self.target_folder)
         self.file_list.clear()
         self.file_paths.clear()
-        self.label.setText(f"{len(copied_files)} 個のファイルを 'data/folder' にコピーしました")
-
-if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    window = MainWindow()
-    window.show()
-    sys.exit(app.exec())
+        self.label.setText(f"{len(copied_files)} 個のファイルをコピーしました")
