@@ -45,7 +45,7 @@ column_names = [
 def convert_to_time_format(num):
     if pd.isna(num):
         return num
-    minutes = int(num // 60)
+    minutes = int(num // 100)
     seconds = num % 60
     if minutes > 0:
         return f"{minutes}:{seconds:05.2f}"
@@ -63,3 +63,7 @@ df.to_csv(
 )  # 例: UTF-8を指定
 
 print("CSVファイルの変換が完了しました。")
+
+if __name__ == "__main__":
+    test = convert_to_time_format(220.0)
+    print(test)
