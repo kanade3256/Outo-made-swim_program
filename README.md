@@ -47,23 +47,23 @@ def test():
 ```sh
 # 1. リポジトリをクローン（初回のみ）
 git clone https://github.com/kanade3256/Outo-made-swim_program.git
+cd Outo-made-swim_program
 
 # 2. 最新の変更を取得して main を最新にする
-git fetch origin
+git checkout main  # または git switch main
+git pull origin main  # 最新の変更を取得（fetch + merge）
 
-# 3. 作業ブランチを作成（作業内容に応じてブランチ名を変更してください）
-#BRANCH_NAME="feature-branch"とする
-git checkout -b $BRANCH_NAME
-git switch $BRANCH_NAME
-# または
-git switch -c $BRANCH_NAME
+# 3. 作業ブランチを作成
+BRANCH_NAME="feature-branch"
+git switch -c $BRANCH_NAME  # checkout -b よりも switch -c のほうが推奨
 
-# 4. コードを編集し、変更をコミット（適宜編集）
+# 4. コードを編集し、変更をコミット
 git add .
 git commit -m "Implement feature X"
 
-# 5. 作業ブランチをリモートにプッシュ
-git push origin $BRANCH_NAME
+# 5. 作業ブランチをリモートにプッシュ（upstream 設定）
+git push -u origin $BRANCH_NAME
+
 ```
 
 ## 使用フロー
