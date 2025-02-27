@@ -26,31 +26,36 @@ def main():
     # print("男子選手リスト:", male_players)  # デバッグ用出力
     # print("女子選手リスト:", female_players)  # デバッグ用出力
 
-    # ---------------------------
-    # 男子選手の全イベントをソートして出力
-    # ---------------------------
-    male_sorted_dict = group_and_sort_all_events(male_players, "male")
-    # print("男子ソート結果:", male_sorted_dict)  # デバッグ用出力
 
-    print("\n=== 男子 の全イベント ソート結果 ===")
-    for (st, dist), sorted_players in male_sorted_dict.items():
-        print(f"\n--- {st}, {dist} ---")
-        for rank, player in enumerate(sorted_players, start=1):
-            time_str = player.times[(st, dist)]
-            print(f"{rank}位: {player.name} ({time_str})")
+    ########################################################
+    # ここから先は、テスト用として作成したのでけしてもよい
+    ########################################################
 
-    # ---------------------------
-    # 女子選手の全イベントをソートして出力
-    # ---------------------------
-    female_sorted_dict = group_and_sort_all_events(female_players, "female")
-    # print("女子ソート結果:", female_sorted_dict)  # デバッグ用出力
+    # # ---------------------------
+    # # 男子選手の全イベントをソートして出力
+    # # ---------------------------
+    # male_sorted_dict = group_and_sort_all_events(male_players, "male")
+    # # print("男子ソート結果:", male_sorted_dict)  # デバッグ用出力
 
-    print("\n=== 女子 の全イベント ソート結果 ===")
-    for (st, dist), sorted_players in female_sorted_dict.items():
-        print(f"\n--- {st}, {dist} ---")
-        for rank, player in enumerate(sorted_players, start=1):
-            time_str = player.times[(st, dist)]
-            print(f"{rank}位: {player.name} ({time_str})")
+    # print("\n=== 男子 の全イベント ソート結果 ===")
+    # for (st, dist), sorted_players in male_sorted_dict.items():
+    #     print(f"\n--- {st}, {dist} ---")
+    #     for rank, player in enumerate(sorted_players, start=1):
+    #         time_str = player.times[(st, dist)]
+    #         print(f"{rank}位: {player.name} ({time_str})")
+
+    # # ---------------------------
+    # # 女子選手の全イベントをソートして出力
+    # # ---------------------------
+    # female_sorted_dict = group_and_sort_all_events(female_players, "female")
+    # # print("女子ソート結果:", female_sorted_dict)  # デバッグ用出力
+
+    # print("\n=== 女子 の全イベント ソート結果 ===")
+    # for (st, dist), sorted_players in female_sorted_dict.items():
+    #     print(f"\n--- {st}, {dist} ---")
+    #     for rank, player in enumerate(sorted_players, start=1):
+    #         time_str = player.times[(st, dist)]
+    #         print(f"{rank}位: {player.name} ({time_str})")
 
 if __name__ == "__main__":
     main()

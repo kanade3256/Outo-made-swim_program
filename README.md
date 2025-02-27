@@ -29,7 +29,20 @@
 - 機能実装の時は必ずブランチを分けて実装する
 - 修正の時は、’modify/修正内容’
 - 新機能の場合は、’feature/新機能名’
+- 新たに関数を作成した場合、その関数の機能について説明をコメントにて書く
 
+```sh
+#example
+def test():
+   """
+   'this is test' と出力する関数
+   """
+   print("this is test")
+   return 0
+```
+
+---
+## gitの使い方
 
 ```sh
 # 1. リポジトリをクローン（初回のみ）
@@ -51,3 +64,5 @@ git commit -m "Implement feature X"
 
 # 5. 作業ブランチをリモートにプッシュ
 git push origin $BRANCH_NAME
+```
+
