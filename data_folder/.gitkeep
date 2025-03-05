@@ -1,2 +1,2 @@
-folder/*
-!folder/.gitkeep
+data_folder/*
+!.gitkeep

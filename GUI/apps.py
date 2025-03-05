@@ -1,14 +1,10 @@
-# apps.py
 import sys
 from PySide6.QtWidgets import QApplication
-from GUI.mainWindow import MainWindow
+from GUI.windows.mainWindow import MainWindow  # `window/main_window.py` から `MainWindow` をインポート
 
 def main():
-    """GUIアプリケーションを起動するメイン関数"""
+    """ GUI アプリケーションを起動するメイン関数 """
     app = QApplication(sys.argv)
     window = MainWindow()
     window.show()
-    sys.exit(app.exec())
-
-if __name__ == "__main__":
-    main()
+    sys.exit(app.exec())  # アプリケーションを実行
