@@ -1,7 +1,7 @@
 # apps.py
 import sys
 from PySide6.QtWidgets import QApplication
-from GUI.windows.main_window import MainWindow
+from GUI.mainWindow import MainWindow
 
 def main():
     """GUIアプリケーションを起動するメイン関数"""
