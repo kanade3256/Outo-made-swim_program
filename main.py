@@ -6,7 +6,7 @@ from GUI.apps import main as GUI_main
 def main():
     
     # CSV を読んで 2次元リストを取得（1行目は読み捨てなどの処理は csv_utils 内で）
-    data = read_csv_data("data_file/test.csv")
+    data = read_csv_data("test_data_file/test.csv")
     # print("CSVデータ:", data)  # デバッグ用出力
 
     # 1行ごとに PlayerData を作って pl_lst に格納
