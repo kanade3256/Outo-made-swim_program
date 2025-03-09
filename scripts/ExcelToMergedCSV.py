@@ -69,7 +69,7 @@ def merge_csv_files(directory_path, output_file):
 
 # 使用例
 if __name__ == "__main__":
-    directory_path = "test_file2"  # Excelファイルが存在するディレクトリのパスを指定
+    directory_path = "test_data_file"  # Excelファイルが存在するディレクトリのパスを指定
     excel_to_csv(directory_path)  # フォルダ内のすべてのエクセルファイルを処理
     output_file = "merged_output.csv"  # 出力ファイル名を指定
     merge_csv_files(directory_path, output_file)
