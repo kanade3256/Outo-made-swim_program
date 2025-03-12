@@ -1,48 +1,38 @@
+# DataConvert.py
+# 役割: CSVデータを正規化し、文字のフォーマット変換やタイムデータの整形を行う。
+# 変数:
+#   - df: CSVデータを格納するPandasのDataFrame
+#   - column_names: タイム変換を適用するカラム名のリスト
+
 import pandas as pd
 import os
 import jaconv
 
-# CSVファイルを指定のエンコーディングで読み込む
-df = pd.read_csv(
-    "",  # ここで変換するファイルのパスを指定
-    encoding="utf-8",
-)  # 例: UTF-8を指定
-
-
-# 全角スペースを半角スペースに変換 & 全角カタカナを半角カタカナに変換
 def normalize_text(text):
+    """
+    テキストを正規化する（全角スペースを半角に、全角カタカナを半角に変換）。
+
+    引数:
+        - text: 変換対象の文字列
+
+    戻り値:
+        - 正規化された文字列
+    """
     if isinstance(text, str):
         text = text.replace("\u3000", " ")  # 全角スペースを半角スペースに変換
-        text = jaconv.z2h(
-            text, kana=True, digit=False, ascii=False
-        )  # 全角カタカナを半角に変換
+        text = jaconv.z2h(text, kana=True, digit=False, ascii=False)  # 全角カタカナを半角に変換
     return text
 
-
-df = df.applymap(normalize_text)
-
-# 時間の値が入っている複数の列名を指定
-column_names = [
-    "200IM",
-    "200Ba",
-    "200Br",
-    "200Fly",
-    "200Fr",
-    "50Ba",
-    "50Br",
-    "50Fly",
-    "50Fr",
-    "400IM",
-    "400Fr",
-    "100Ba",
-    "100Br",
-    "100Fly",
-    "100Fr",
-]
-
-
-# 各列を確認して、タイムフォーマットに変換
 def convert_to_time_format(num):
+    """
+    数値を競泳タイムのフォーマットに変換する。
+
+    引数:
+        - num: 数値（例: 220.0）
+
+    戻り値:
+        - タイムフォーマットの文字列（例: "2:20.00"）
+    """
     if pd.isna(num):
         return num
     minutes = int(num // 100)
@@ -52,18 +42,22 @@ def convert_to_time_format(num):
     else:
         return f"{seconds:.2f}"
 
-
-for col in column_names:
-    if col in df.columns:
-        df[col] = df[col].apply(convert_to_time_format)
-
-# 変換結果を指定のエンコーディングで新しいCSVファイルとして保存
-df.to_csv(
-    "merged_output_converted.csv", index=False, encoding="utf-8"
-)  # 例: UTF-8を指定
-
-print("CSVファイルの変換が完了しました。")
-
 if __name__ == "__main__":
-    test = convert_to_time_format(220.0)
-    print(test)
+    """
+    メイン処理:
+    1. CSVファイルを読み込み、データの正規化を適用
+    2. タイムデータのフォーマット変換
+    3. 結果を新しいCSVファイルに保存
+    """
+    df = pd.read_csv("merged_output.csv", encoding="utf-8")
+    df = df.applymap(normalize_text)
+
+    column_names = ["200IM", "200Ba", "200Br", "200Fly", "200Fr", "50Ba", "50Br", "50Fly", "50Fr", 
+                    "400IM", "400Fr", "100Ba", "100Br", "100Fly", "100Fr"]
+
+    for col in column_names:
+        if col in df.columns:
+            df[col] = df[col].apply(convert_to_time_format)
+
+    df.to_csv("merged_output_converted.csv", index=False, encoding="utf-8")
+    print("CSVファイルの変換が完了しました。")

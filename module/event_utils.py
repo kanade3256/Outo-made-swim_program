@@ -1,3 +1,10 @@
+# event_utils.py
+# 役割: 競技種目名の解析やイベント情報の管理を行う。
+# 変数:
+#   - event_name: 解析対象の競技種目名
+#   - stroke: 泳法（例: 'fr', 'ba', 'fly'）
+#   - distance: 距離（例: 50, 100, 200）
+
 import re
 
 # CSVファイルの列順に対応するイベント名をあらかじめ用意する
@@ -14,6 +21,12 @@ def parse_event_name(event_name: str) -> tuple[str, int]:
     例: "200IM" -> ("im", 200)
          "50Fr" -> ("fr", 50)
     イベント名の文字列をパースして泳法(stroke)と距離(distance)を返す。
+
+    引数:
+        - event_name: イベント名 (例: "200IM")
+
+    戻り値:
+        - (泳法, 距離) のタプル
     """
     match = re.match(r'(\d+)([A-Za-z]+)', event_name.strip())
     if not match:
