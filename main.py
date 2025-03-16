@@ -9,6 +9,8 @@
 from module.csv_utils import read_csv_data
 from module.player_utils import create_player_from_row
 from module.player_sort_utils import group_and_sort_all_events
+from scripts.ExcelToMergedCSV import main as ExcelToMergedCSV_main
+from scripts.write_ID import main as write_to_excel
 
 def main():
     """
@@ -17,8 +19,13 @@ def main():
     2. 指定されたカテゴリごとに選手をソート
     3. 結果をコンソールに出力
     """
-    # CSV からプレイヤーデータの一覧を取得
-    data = read_csv_data("test_data_file/test.csv")
+    filepath = "test/merged_output.csv"
+
+    # 1. Excel ファイルを結合して CSV ファイルを作成
+    ExcelToMergedCSV_main()
+
+    # 2. 結合したCSV からプレイヤーデータの一覧を取得
+    data = read_csv_data(filepath)
     pl_lst = []
     for n, row in enumerate(data):
         if n == 0:
@@ -36,6 +43,9 @@ def main():
         for rank, player in enumerate(sorted_players, start=1):
             time_str = player.times.get((stroke, dist), "0")
             print(f"{rank}位: {player.name} ({time_str})")
+    
+    # 3. 結果を Excel ファイルに書き込む
+    write_to_excel()
 
 if __name__ == "__main__":
     main()

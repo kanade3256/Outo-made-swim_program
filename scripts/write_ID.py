@@ -8,7 +8,7 @@
 
 import os
 import openpyxl
-import get_ID  # get_ID.py をインポート
+from scripts.get_ID import get_player_id
 
 def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
     """
@@ -47,15 +47,14 @@ def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
     new_wb.save(output_path)
     print(f"Excel ファイルを保存しました: {output_path}")
 
-if __name__ == "__main__":
+def main():
     """
     メイン処理:
     1. 競技別に選手IDを取得
     2. Excelのシートに選手IDを書き込む
     3. 結果を出力
     """
-    csv_file = "data_file/test2.csv"
-
+    csv_file = "test/merged_output.csv"
     cell_config = {
         50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
         100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
@@ -77,7 +76,7 @@ if __name__ == "__main__":
             for i in range(6)
         ]
 
-        ids = get_ID.get_player_id(csv_file, (stroke, distance), category="mixed")
+        ids = get_player_id(csv_file, (stroke, distance), category="mixed")
 
         if not ids:
             print(f"イベント {stroke}{distance} のIDデータが見つかりません。")
@@ -87,3 +86,6 @@ if __name__ == "__main__":
         sheet_name = f"{distance}m"
 
         write_to_excel("data_file/テンプレート.xlsx", output_filename, sheet_name, cells, ids)
+
+if __name__ == "__main__":
+    main()
