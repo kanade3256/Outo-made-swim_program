@@ -73,12 +73,12 @@ def update_excel_with_player_data(excel_path, csv_path, target_cells):
             if grade is not None:
                 ws[f"{get_column_letter(col_index + 3)}{row_number}"].value = grade
 
-    output_dir = "data_file"
+    output_dir = "data_folder"
     os.makedirs(output_dir, exist_ok=True)
     output_path = os.path.join(output_dir, os.path.basename(excel_path))
     wb.save(output_path)
 
-if __name__ == "__main__":
+def main():
     """
     メイン処理:
     1. CSVファイルから選手情報を取得
@@ -114,3 +114,6 @@ if __name__ == "__main__":
         excel_file = os.path.join("data_file", f"{distance}{stroke}_id.xlsx")
         update_excel_with_player_data(excel_file, csv_file_path, target_cells_list)
         print(f"{stroke}{distance} のExcelファイルの更新が完了しました！")
+
+if __name__ == "__main__":
+    main()

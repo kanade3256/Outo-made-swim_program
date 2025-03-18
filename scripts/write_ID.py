@@ -42,8 +42,8 @@ def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
             ws_new[cell] = names[idx]
 
     # 出力先ディレクトリを作成（存在しない場合）
-    os.makedirs("data_file", exist_ok=True)
-    output_path = os.path.join("data_file", output_filename)
+    os.makedirs("data_folder", exist_ok=True)
+    output_path = os.path.join("data_folder", output_filename)
     new_wb.save(output_path)
     print(f"Excel ファイルを保存しました: {output_path}")
 
@@ -85,7 +85,7 @@ def main():
         output_filename = f"{distance}{stroke}_id.xlsx"
         sheet_name = f"{distance}m"
 
-        write_to_excel("data_file/テンプレート.xlsx", output_filename, sheet_name, cells, ids)
+        write_to_excel("test/テンプレート.xlsx", output_filename, sheet_name, cells, ids)
 
 if __name__ == "__main__":
     main()

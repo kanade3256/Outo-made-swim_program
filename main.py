@@ -11,6 +11,7 @@ from module.player_utils import create_player_from_row
 from module.player_sort_utils import group_and_sort_all_events
 from scripts.ExcelToMergedCSV import main as ExcelToMergedCSV_main
 from scripts.write_ID import main as write_to_excel
+from scripts.fill_name import main as fill_name
 
 def main():
     """
@@ -46,6 +47,7 @@ def main():
     
     # 3. 結果を Excel ファイルに書き込む
     write_to_excel()
+    fill_name()
 
 if __name__ == "__main__":
     main()
