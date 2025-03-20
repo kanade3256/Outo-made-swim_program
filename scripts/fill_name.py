@@ -14,7 +14,8 @@ from openpyxl.utils.cell import coordinate_from_string, column_index_from_string
 load_dotenv()
 RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
 INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
-MERGED_CSV_DATA_FILE = os.getenv("MERGED_CSV_DATA_FILE") 
+DIRECTORY_PATH = os.getenv("DIRECTORY_PATH", "test/")
+MERGED_CSV_DATA_FILE = os.path.join(DIRECTORY_PATH, os.getenv("MERGED_CSV_DATA_FILE"))
 
 def get_player_data_by_id(player_ids, csv_path):
     """
@@ -52,6 +53,11 @@ def update_excel_with_player_data(excel_path, csv_path, target_cells):
         - target_cells: Excel内の対象セルのリスト
     """
     if not os.path.exists(excel_path):
+        return
+
+    # ファイルが存在するか確認
+    if not os.path.exists(csv_path):
+        print(f"エラー: CSVファイル '{csv_path}' が見つかりません。")
         return
 
     wb = load_workbook(excel_path)

@@ -3,6 +3,10 @@ from PySide6.QtWidgets import QWidget, QLabel, QPushButton, QVBoxLayout, QListWi
 from PySide6.QtGui import QDragEnterEvent, QDropEvent
 from PySide6.QtCore import Qt
 from GUI.utils.file_manager import FileManager  # ファイル管理クラスをインポート
+from dotenv import load_dotenv
+
+load_dotenv()
+INPUT_DATA_FOLDER = os.getenv("INPUT_DATA_FILE")
 
 class MainWindow(QWidget):
     def __init__(self):
@@ -13,7 +17,7 @@ class MainWindow(QWidget):
         self.setGeometry(100, 100, 400, 400)
 
         # ファイル管理クラス
-        self.file_manager = FileManager(os.path.join(os.getcwd(), "data_folder"))
+        self.file_manager = FileManager(os.path.join(os.getcwd(), INPUT_DATA_FOLDER))
         self.file_manager.reset_folder()
 
         # UI要素
