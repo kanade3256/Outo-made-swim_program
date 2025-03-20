@@ -9,6 +9,12 @@
 import os
 import openpyxl
 from scripts.get_ID import get_player_id
+from dotenv import load_dotenv
+
+# 環境変数の読み込み
+load_dotenv()
+RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
+INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
 
 def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
     """
@@ -42,8 +48,8 @@ def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
             ws_new[cell] = names[idx]
 
     # 出力先ディレクトリを作成（存在しない場合）
-    os.makedirs("data_folder", exist_ok=True)
-    output_path = os.path.join("data_folder", output_filename)
+    os.makedirs(INPUT_DATA_FILE, exist_ok=True)
+    output_path = os.path.join(INPUT_DATA_FILE, output_filename)
     new_wb.save(output_path)
     print(f"Excel ファイルを保存しました: {output_path}")
 

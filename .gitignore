@@ -19,7 +19,10 @@ venv/
 *.tmp
 .DS_Store  # macOS の不要ファイル
 
+#ユーザーから入力されるデータを無視
 data_folder/*
 !.gitkeep
 
-# test/
+# 結果出力フォルダを無視
+result_output_folder/*
+!.gitkeep

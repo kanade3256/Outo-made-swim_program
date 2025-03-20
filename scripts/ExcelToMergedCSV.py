@@ -1,5 +1,9 @@
 import os
 import pandas as pd
+from dotenv import load_dotenv
+
+load_dotenv()
+DIRECTORY_PATH = os.getenv("DIRECTORY_PATH")
 
 def delete_existing_csv(directory_path):
     """
@@ -67,16 +71,15 @@ def main():
     2. ExcelファイルをCSVに変換
     3. すべてのCSVを統合
     """
-    directory_path = "test/"
     
     # 既存のCSVファイルを削除
-    delete_existing_csv(directory_path)
+    delete_existing_csv(DIRECTORY_PATH)
     
     # ExcelファイルをCSVに変換
-    excel_to_csv(directory_path)
+    excel_to_csv(DIRECTORY_PATH)
     
     # すべてのCSVを統合（出力先をtestフォルダ内に指定）
-    merge_csv_files(directory_path, os.path.join(directory_path, "merged_output.csv"))
+    merge_csv_files(DIRECTORY_PATH, os.path.join(DIRECTORY_PATH, "merged_output.csv"))
 
 if __name__ == "__main__":
     main()

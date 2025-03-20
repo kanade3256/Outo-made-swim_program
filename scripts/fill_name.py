@@ -7,8 +7,13 @@
 
 import os
 import pandas as pd
+from dotenv import load_dotenv
 from openpyxl import load_workbook
 from openpyxl.utils.cell import coordinate_from_string, column_index_from_string, get_column_letter
+
+load_dotenv()
+RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
+INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
 
 def get_player_data_by_id(player_ids, csv_path):
     """
@@ -73,9 +78,8 @@ def update_excel_with_player_data(excel_path, csv_path, target_cells):
             if grade is not None:
                 ws[f"{get_column_letter(col_index + 3)}{row_number}"].value = grade
 
-    output_dir = "data_folder"
-    os.makedirs(output_dir, exist_ok=True)
-    output_path = os.path.join(output_dir, os.path.basename(excel_path))
+    os.makedirs(RESULT_DATA_FILE, exist_ok=True)
+    output_path = os.path.join(RESULT_DATA_FILE, os.path.basename(excel_path))
     wb.save(output_path)
 
 def main():
@@ -85,7 +89,7 @@ def main():
     2. 競技別にExcelシートを更新
     3. 更新完了のメッセージを出力
     """
-    csv_file_path = "data_file/test2.csv"
+    csv_file_path = "test/merged_output.csv"
     cell_config = {
         50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
         100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
@@ -111,7 +115,7 @@ def main():
             for offset in [0, -1, 1, -2, 2, -3]
         ]
 
-        excel_file = os.path.join("data_file", f"{distance}{stroke}_id.xlsx")
+        excel_file = os.path.join(INPUT_DATA_FILE, f"{distance}{stroke}_id.xlsx")
         update_excel_with_player_data(excel_file, csv_file_path, target_cells_list)
         print(f"{stroke}{distance} のExcelファイルの更新が完了しました！")
 
