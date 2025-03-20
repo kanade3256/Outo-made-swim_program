@@ -20,7 +20,7 @@ venv/
 .DS_Store  # macOS の不要ファイル
 
 #ユーザーから入力されるデータを無視
-data_folder/*
+input_data_folder/*
 !.gitkeep
 
 # 結果出力フォルダを無視

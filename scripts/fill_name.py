@@ -14,6 +14,7 @@ from openpyxl.utils.cell import coordinate_from_string, column_index_from_string
 load_dotenv()
 RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
 INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
+MERGED_CSV_DATA_FILE = os.getenv("MERGED_CSV_DATA_FILE") 
 
 def get_player_data_by_id(player_ids, csv_path):
     """
@@ -89,7 +90,7 @@ def main():
     2. 競技別にExcelシートを更新
     3. 更新完了のメッセージを出力
     """
-    csv_file_path = "test/merged_output.csv"
+    
     cell_config = {
         50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
         100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
@@ -116,7 +117,7 @@ def main():
         ]
 
         excel_file = os.path.join(INPUT_DATA_FILE, f"{distance}{stroke}_id.xlsx")
-        update_excel_with_player_data(excel_file, csv_file_path, target_cells_list)
+        update_excel_with_player_data(excel_file, MERGED_CSV_DATA_FILE, target_cells_list)
         print(f"{stroke}{distance} のExcelファイルの更新が完了しました！")
 
 if __name__ == "__main__":

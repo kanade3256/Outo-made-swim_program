@@ -15,6 +15,8 @@ from dotenv import load_dotenv
 load_dotenv()
 RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
 INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
+MERGED_CSV_DATA_FILE = os.getenv("MERGED_CSV_DATA_FILE") 
+TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")  # テンプレートファイルのパス
 
 def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
     """
@@ -48,8 +50,8 @@ def write_to_excel(input_filename, output_filename, sheet_name, cells, names):
             ws_new[cell] = names[idx]
 
     # 出力先ディレクトリを作成（存在しない場合）
-    os.makedirs(INPUT_DATA_FILE, exist_ok=True)
-    output_path = os.path.join(INPUT_DATA_FILE, output_filename)
+    os.makedirs(RESULT_DATA_FILE, exist_ok=True)
+    output_path = os.path.join(RESULT_DATA_FILE, output_filename)
     new_wb.save(output_path)
     print(f"Excel ファイルを保存しました: {output_path}")
 
@@ -60,7 +62,6 @@ def main():
     2. Excelのシートに選手IDを書き込む
     3. 結果を出力
     """
-    csv_file = "test/merged_output.csv"
     cell_config = {
         50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
         100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
@@ -82,7 +83,7 @@ def main():
             for i in range(6)
         ]
 
-        ids = get_player_id(csv_file, (stroke, distance), category="mixed")
+        ids = get_player_id(MERGED_CSV_DATA_FILE, (stroke, distance), category="mixed")
 
         if not ids:
             print(f"イベント {stroke}{distance} のIDデータが見つかりません。")
@@ -91,7 +92,7 @@ def main():
         output_filename = f"{distance}{stroke}_id.xlsx"
         sheet_name = f"{distance}m"
 
-        write_to_excel("test/テンプレート.xlsx", output_filename, sheet_name, cells, ids)
+        write_to_excel(TEMPLATE_FILE, output_filename, sheet_name, cells, ids)
 
 if __name__ == "__main__":
     main()

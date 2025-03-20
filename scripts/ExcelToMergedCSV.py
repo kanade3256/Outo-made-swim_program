@@ -3,7 +3,7 @@ import pandas as pd
 from dotenv import load_dotenv
 
 load_dotenv()
-DIRECTORY_PATH = os.getenv("DIRECTORY_PATH")
+DIRECTORY_PATH = os.getenv("DIRECTORY_PATH")   
 
 def delete_existing_csv(directory_path):
     """

@@ -29,4 +29,5 @@ def main():
     fill_name()
 
 if __name__ == "__main__":
-    main()
+    # main()
+    GUI_main()
