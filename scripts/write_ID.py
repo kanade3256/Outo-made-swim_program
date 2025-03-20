@@ -19,11 +19,10 @@ logger = logging.getLogger(__name__)
 
 # 環境変数の読み込み
 load_dotenv()
-RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE")
-INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
-DIRECTORY_PATH = os.getenv("DIRECTORY_PATH", "test/")
-MERGED_CSV_DATA_FILE = os.path.join(DIRECTORY_PATH, os.getenv("MERGED_CSV_DATA_FILE"))
-TEMPLATE_FILE = os.getenv("TEMPLATE_FILE")  # テンプレートファイルのパス
+RESULT_DATA_FILE = os.getenv("RESULT_DATA_FILE", "result_output_folder")
+INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE", "input_data_folder")
+MERGED_CSV_DATA_FILE = os.path.join(INPUT_DATA_FILE, os.getenv("MERGED_CSV_DATA_FILE", "merged_output.csv"))
+TEMPLATE_FILE = os.getenv("TEMPLATE_FILE", "template.xlsx")  # テンプレートファイルのパス
 
 def write_to_excel(
     input_filename: str, 
@@ -183,6 +182,12 @@ def main() -> None:
             logger.error(f"マージされたCSVファイルが見つかりません: {MERGED_CSV_DATA_FILE}")
             print(f"エラー: マージされたCSVファイル '{MERGED_CSV_DATA_FILE}' が見つかりません")
             return
+            
+        # 出力フォルダを確認・作成
+        if not os.path.exists(RESULT_DATA_FILE):
+            os.makedirs(RESULT_DATA_FILE, exist_ok=True)
+            logger.info(f"出力フォルダを作成しました: {RESULT_DATA_FILE}")
+            print(f"出力フォルダを作成しました: {RESULT_DATA_FILE}")
             
         # 出力フォルダ内の過去データを削除
         deleted_count = clean_output_directory(RESULT_DATA_FILE)

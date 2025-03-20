@@ -19,8 +19,8 @@ from module.player_data import PlayerData
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-DIRECTORY_PATH = os.getenv("DIRECTORY_PATH", "test/")
-MERGED_CSV_DATA_FILE = os.path.join(DIRECTORY_PATH, os.getenv("MERGED_CSV_DATA_FILE"))
+INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE", "input_data_folder")
+MERGED_CSV_DATA_FILE = os.path.join(INPUT_DATA_FILE, os.getenv("MERGED_CSV_DATA_FILE", "merged_output.csv"))
 
 def get_player_id(csv_path: str, event: Tuple[str, int], category: str = "mixed") -> List[str]:
     """

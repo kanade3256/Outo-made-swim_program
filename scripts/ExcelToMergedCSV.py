@@ -8,7 +8,13 @@ from dotenv import load_dotenv
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-DIRECTORY_PATH = os.getenv("DIRECTORY_PATH")   
+DIRECTORY_PATH = os.getenv("DIRECTORY_PATH")
+INPUT_DATA_FILE = os.getenv("INPUT_DATA_FILE")
+MERGED_CSV_DATA_FILE = os.getenv("MERGED_CSV_DATA_FILE")
+
+# 絶対パスの設定
+INPUT_FOLDER = INPUT_DATA_FILE
+OUTPUT_CSV = os.path.join(INPUT_FOLDER, MERGED_CSV_DATA_FILE)
 
 def delete_existing_csv(directory_path: str) -> List[str]:
     """
@@ -166,21 +172,24 @@ def main() -> NoReturn:
         なし
     """
     try:
-        if not DIRECTORY_PATH:
-            logger.error("環境変数 DIRECTORY_PATH が設定されていません")
-            print("エラー: 環境変数 DIRECTORY_PATH が設定されていません")
+        if not INPUT_FOLDER:
+            logger.error("環境変数 INPUT_DATA_FILE が設定されていません")
+            print("エラー: 環境変数 INPUT_DATA_FILE が設定されていません")
             return
             
+        # input_data_folderが存在しない場合は作成
+        os.makedirs(INPUT_FOLDER, exist_ok=True)
+            
         # 既存のCSVファイルを削除
-        delete_existing_csv(DIRECTORY_PATH)
+        delete_existing_csv(INPUT_FOLDER)
         
         # ExcelファイルをCSVに変換
-        excel_to_csv(DIRECTORY_PATH)
+        excel_to_csv(INPUT_FOLDER)
         
         # すべてのCSVを統合（出力先を指定）
-        merge_csv_files(DIRECTORY_PATH, os.path.join(DIRECTORY_PATH, "merged_output.csv"))
+        merge_csv_files(INPUT_FOLDER, OUTPUT_CSV)
         
-        logger.info(f"すべての処理が完了しました: {DIRECTORY_PATH}")
+        logger.info(f"すべての処理が完了しました: {INPUT_FOLDER}")
     except Exception as e:
         logger.error(f"予期しないエラーが発生しました: {e}", exc_info=True)
         print(f"予期しないエラーが発生しました: {e}")
