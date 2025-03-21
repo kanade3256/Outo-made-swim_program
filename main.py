@@ -69,5 +69,5 @@ def main() -> NoReturn:
         print("ログファイル(app.log)を確認してください")
 
 if __name__ == "__main__":
-    # GUI_main()
-    main()
+    GUI_main()
+    # main()
