@@ -54,19 +54,23 @@ def main() -> NoReturn:
         # fill_name()
         
         logger.info("処理が正常に完了しました")
+        return True
     except FileNotFoundError as e:
         logger.error(f"ファイルが見つかりません: {e}")
         logger.error(traceback.format_exc())
         print(f"エラー: ファイルが見つかりません。詳細: {e}")
+        raise
     except PermissionError as e:
         logger.error(f"ファイルへのアクセス権限がありません: {e}")
         logger.error(traceback.format_exc())
         print(f"エラー: ファイルへのアクセス権限がありません。詳細: {e}")
+        raise
     except Exception as e:
         logger.error(f"予期しないエラーが発生しました: {e}")
         logger.error(traceback.format_exc())
         print(f"予期しないエラーが発生しました。詳細: {e}")
         print("ログファイル(app.log)を確認してください")
+        raise
 
 if __name__ == "__main__":
     GUI_main()
