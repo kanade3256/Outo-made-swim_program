@@ -50,8 +50,8 @@ def main() -> NoReturn:
         
         # 3. 選手の名前・フリガナ・学校名・学年を補完する
         # 現在コメントアウトされているが、必要に応じて有効化
-        # logger.info("選手情報の補完を開始します")
-        # fill_name()
+        logger.info("選手情報の補完を開始します")
+        fill_name()
         
         logger.info("処理が正常に完了しました")
         return True
