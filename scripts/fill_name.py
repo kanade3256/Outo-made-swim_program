@@ -53,6 +53,7 @@ def update_excel_with_player_data(excel_path, csv_path, target_cells):
         - target_cells: Excel内の対象セルのリスト
     """
     if not os.path.exists(excel_path):
+        print("pathが存在しません")
         return
 
     # ファイルが存在するか確認
@@ -96,35 +97,43 @@ def main():
     2. 競技別にExcelシートを更新
     3. 更新完了のメッセージを出力
     """
-    
-    cell_config = {
-        50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
-        100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
-        200: ["B", "L", "V", "AF", "AP"],
-        400: ["B", "P", "AD"],
-    }
+    try:
+        cell_config = {
+            50: ["B", "I", "P", "W", "AD", "AK", "AR", "AY", "BF", "BM"],
+            100: ["B", "J", "Q", "Y", "AF", "AN", "AT", "BH", "BO"],
+            200: ["B", "L", "V", "AF", "AP"],
+            400: ["B", "P", "AD"],
+        }
 
-    events = [
-        (stroke, distance)
-        for stroke in ["fly", "ba", "br", "fr", "im"]
-        for distance in [50, 100, 200, 400]
-    ]
-
-    for stroke, distance in events:
-        if distance not in cell_config:
-            continue
-
-        prefixes = cell_config[distance]
-        target_cells_list = [
-            f"{prefix}{7 + i * 10 + offset}"
-            for prefix in prefixes
-            for i in range(6)
-            for offset in [0, -1, 1, -2, 2, -3]
+        events = [
+            (stroke, distance)
+            for stroke in ["fly", "ba", "br", "fr", "im"]
+            for distance in [50, 100, 200, 400]
         ]
 
-        excel_file = os.path.join(INPUT_DATA_FILE, f"{distance}{stroke}_id.xlsx")
-        update_excel_with_player_data(excel_file, MERGED_CSV_DATA_FILE, target_cells_list)
-        print(f"{stroke}{distance} のExcelファイルの更新が完了しました！")
+        for stroke, distance in events:
+            if distance not in cell_config:
+                continue
+
+            prefixes = cell_config[distance]
+            target_cells_list = [
+                f"{prefix}{7 + i * 10 + offset}"
+                for prefix in prefixes
+                for i in range(6)
+                for offset in [0, -1, 1, -2, 2, -3]
+            ]
+
+            excel_file = os.path.join(RESULT_DATA_FILE, f"{distance}{stroke}_id.xlsx")
+            print(excel_file)
+            try:
+                update_excel_with_player_data(excel_file, MERGED_CSV_DATA_FILE, target_cells_list)
+                print(f"{stroke}{distance} のExcelファイルの更新が完了しました！")
+            except FileNotFoundError as e:
+                print(f"エラー: ファイルが見つかりません: {e}")
+            except Exception as e:
+                print(f"エラー: {stroke}{distance} の処理中に予期しないエラーが発生しました: {e}")
+    except Exception as e:
+        print(f"メイン処理中に予期しないエラーが発生しました: {e}")
 
 if __name__ == "__main__":
     main()
