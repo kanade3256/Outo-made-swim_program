@@ -14,6 +14,8 @@ from module.csv_utils import read_csv_data
 from module.player_utils import create_player_from_row
 from module.player_sort_utils import group_and_sort_all_events
 from module.player_data import PlayerData
+import traceback
+from module.send_message import send_slack_message
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -43,6 +45,7 @@ def get_player_id(csv_path: str, event: Tuple[str, int], category: str = "mixed"
         data = read_csv_data(csv_path)
         if len(data) <= 1:  # ヘッダーのみ、またはデータなし
             logger.warning(f"CSVファイルにデータがありません: {csv_path}")
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルにデータがありません: {csv_path}")
             return []
 
         # 選手データの作成
@@ -53,6 +56,7 @@ def get_player_id(csv_path: str, event: Tuple[str, int], category: str = "mixed"
                 players.append(player)
             except ValueError as e:
                 logger.warning(f"選手データの作成に失敗しました: {e}")
+                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手データの作成に失敗しました: {e}")
                 continue
 
         # 選手をグループ化してソート
@@ -65,12 +69,15 @@ def get_player_id(csv_path: str, event: Tuple[str, int], category: str = "mixed"
 
     except FileNotFoundError as e:
         logger.error(f"CSVファイルが見つかりません: {csv_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが見つかりません: {csv_path} - {e}")
         raise
     except ValueError as e:
         logger.error(f"イベントまたはカテゴリの指定が不正です: {event}, {category} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"イベントまたはカテゴリの指定が不正です: {event}, {category} - {e}")
         raise ValueError(f"イベントまたはカテゴリの指定が不正です: {event}, {category}")
     except Exception as e:
         logger.error(f"選手ID取得中に予期しないエラーが発生しました: {e}", exc_info=True)
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手ID取得中に予期しないエラーが発生しました: {e}\n{traceback.format_exc()}")
         raise
 
 def get_player_info_by_id(player_id_list: List[str], csv_path: str) -> List[Tuple[str, str, str]]:
@@ -92,6 +99,7 @@ def get_player_info_by_id(player_id_list: List[str], csv_path: str) -> List[Tupl
         data = read_csv_data(csv_path)
         if len(data) <= 1:  # ヘッダーのみ、またはデータなし
             logger.warning(f"CSVファイルにデータがありません: {csv_path}")
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルにデータがありません: {csv_path}")
             return []
 
         # 選手データをID別の辞書に格納
@@ -102,6 +110,7 @@ def get_player_info_by_id(player_id_list: List[str], csv_path: str) -> List[Tupl
                 players[player.id] = player
             except ValueError as e:
                 logger.warning(f"選手データの作成に失敗しました: {e}")
+                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手データの作成に失敗しました: {e}")
                 continue
 
         # 指定されたIDに対応する選手情報を取得
@@ -111,15 +120,18 @@ def get_player_info_by_id(player_id_list: List[str], csv_path: str) -> List[Tupl
                 result.append((pid, players[pid].name, players[pid].sex))
             else:
                 logger.warning(f"選手ID '{pid}' に対応する選手が見つかりません")
+                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手ID '{pid}' に対応する選手が見つかりません")
         
         logger.info(f"選手情報を {len(result)}/{len(player_id_list)} 件取得しました")
         return result
 
     except FileNotFoundError as e:
         logger.error(f"CSVファイルが見つかりません: {csv_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが見つかりません: {csv_path} - {e}")
         raise
     except Exception as e:
         logger.error(f"選手情報取得中に予期しないエラーが発生しました: {e}", exc_info=True)
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手情報取得中に予期しないエラーが発生しました: {e}\n{traceback.format_exc()}")
         raise
 
 def get_players_by_event(csv_path: str, event: Tuple[str, int], category: str = "mixed") -> List[PlayerData]:
@@ -143,6 +155,7 @@ def get_players_by_event(csv_path: str, event: Tuple[str, int], category: str = 
         data = read_csv_data(csv_path)
         if len(data) <= 1:  # ヘッダーのみ、またはデータなし
             logger.warning(f"CSVファイルにデータがありません: {csv_path}")
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルにデータがありません: {csv_path}")
             return []
 
         # 選手データの作成
@@ -153,6 +166,7 @@ def get_players_by_event(csv_path: str, event: Tuple[str, int], category: str = 
                 players.append(player)
             except ValueError as e:
                 logger.warning(f"選手データの作成に失敗しました: {e}")
+                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手データの作成に失敗しました: {e}")
                 continue
 
         # 選手をグループ化してソート
@@ -164,10 +178,13 @@ def get_players_by_event(csv_path: str, event: Tuple[str, int], category: str = 
 
     except FileNotFoundError as e:
         logger.error(f"CSVファイルが見つかりません: {csv_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが見つかりません: {csv_path} - {e}")
         raise
     except ValueError as e:
         logger.error(f"イベントまたはカテゴリの指定が不正です: {event}, {category} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"イベントまたはカテゴリの指定が不正です: {event}, {category} - {e}")
         raise ValueError(f"イベントまたはカテゴリの指定が不正です: {event}, {category}")
     except Exception as e:
         logger.error(f"選手取得中に予期しないエラーが発生しました: {e}", exc_info=True)
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"選手取得中に予期しないエラーが発生しました: {e}\n{traceback.format_exc()}")
         raise

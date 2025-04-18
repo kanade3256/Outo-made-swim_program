@@ -8,6 +8,8 @@ import csv
 import os
 import logging
 from typing import List, Union, Dict, Any, Optional
+import traceback
+from module.send_message import send_slack_message
 
 # ロガーの設定
 logger = logging.getLogger(__name__)
@@ -29,6 +31,7 @@ def read_csv_data(file_path: str) -> List[List[str]]:
     """
     if not os.path.exists(file_path):
         logger.error(f"CSVファイルが見つかりません: {file_path}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが見つかりません: {file_path}")
         raise FileNotFoundError(f"ファイルが見つかりません: {file_path}")
         
     try:
@@ -38,12 +41,14 @@ def read_csv_data(file_path: str) -> List[List[str]]:
             
             if not data:
                 logger.warning(f"CSVファイルが空です: {file_path}")
+                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが空です: {file_path}")
                 return []
                 
             logger.info(f"CSVファイルを正常に読み込みました: {file_path}, {len(data)}行")
             return data
     except PermissionError as e:
         logger.error(f"CSVファイルの読み取り権限がありません: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルの読み取り権限がありません: {file_path} - {e}")
         raise PermissionError(f"ファイルの読み取り権限がありません: {file_path}")
     except UnicodeDecodeError as e:
         # UTF-8以外のエンコーディングで試行
@@ -60,9 +65,11 @@ def read_csv_data(file_path: str) -> List[List[str]]:
         
         # すべてのエンコーディングが失敗
         logger.error(f"CSVファイルのエンコーディングが不正です: {file_path}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルのエンコーディングが不正です: {file_path}")
         raise UnicodeDecodeError("utf-8", b"", 0, 1, f"ファイルのエンコーディングが不正です: {file_path}")
     except Exception as e:
         logger.error(f"CSVファイル読み込み中に予期しないエラーが発生しました: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイル読み込み中に予期しないエラーが発生しました: {file_path} - {e}\n{traceback.format_exc()}")
         raise
 
 def write_csv_data(file_path: str, data: List[List[Any]], headers: Optional[List[str]] = None) -> bool:
@@ -97,12 +104,15 @@ def write_csv_data(file_path: str, data: List[List[Any]], headers: Optional[List
         return True
     except PermissionError as e:
         logger.error(f"CSVファイルへの書き込み権限がありません: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルへの書き込み権限がありません: {file_path} - {e}")
         return False
     except IOError as e:
         logger.error(f"CSVファイル書き込み中にIOエラーが発生しました: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイル書き込み中にIOエラーが発生しました: {file_path} - {e}")
         return False
     except Exception as e:
         logger.error(f"CSVファイル書き込み中に予期しないエラーが発生しました: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイル書き込み中に予期しないエラーが発生しました: {file_path} - {e}\n{traceback.format_exc()}")
         return False
 
 def read_csv_as_dict(file_path: str) -> List[Dict[str, str]]:
@@ -122,6 +132,7 @@ def read_csv_as_dict(file_path: str) -> List[Dict[str, str]]:
     """
     if not os.path.exists(file_path):
         logger.error(f"CSVファイルが見つかりません: {file_path}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルが見つかりません: {file_path}")
         raise FileNotFoundError(f"ファイルが見つかりません: {file_path}")
         
     try:
@@ -133,6 +144,7 @@ def read_csv_as_dict(file_path: str) -> List[Dict[str, str]]:
             return data
     except PermissionError as e:
         logger.error(f"CSVファイルの読み取り権限がありません: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルの読み取り権限がありません: {file_path} - {e}")
         raise PermissionError(f"ファイルの読み取り権限がありません: {file_path}")
     except UnicodeDecodeError:
         # UTF-8以外のエンコーディングで試行
@@ -148,7 +160,9 @@ def read_csv_as_dict(file_path: str) -> List[Dict[str, str]]:
         
         # すべてのエンコーディングが失敗
         logger.error(f"CSVファイルのエンコーディングが不正です: {file_path}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイルのエンコーディングが不正です: {file_path}")
         raise
     except Exception as e:
         logger.error(f"CSVファイル読み込み中に予期しないエラーが発生しました: {file_path} - {e}")
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"CSVファイル読み込み中に予期しないエラーが発生しました: {file_path} - {e}\n{traceback.format_exc()}")
         raise

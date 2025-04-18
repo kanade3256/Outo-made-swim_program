@@ -1,5 +1,8 @@
+import logging
 import os
+import traceback
 import threading
+from module.send_message import send_slack_message
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QMessageBox, QPushButton, QHBoxLayout, QStackedWidget
 from PySide6.QtCore import Signal, Qt, Slot
 from GUI.utils.file_manager import FileManager
@@ -86,39 +89,35 @@ class DragDropWindow(QWidget):
         self.file_list_widget.copyRequested.connect(self.on_copy_requested)
 
     def on_copy_requested(self, files):
-        """ コピー実行ボタン押下時の処理 """
-        if not files:
-            QMessageBox.warning(self, "警告", "コピーするファイルがありません")
-            return
+        try:
+            if not files:
+                QMessageBox.warning(self, "警告", "コピーするファイルがありません")
+                return
+            copied_files = self.file_manager.copy_files(files)
+            if not copied_files:
+                QMessageBox.warning(self, "エラー", "ファイルのコピーに失敗しました")
+                return
+            self.file_list_widget.clear_files()
+            self.stacked_widget.setCurrentIndex(1)
+            self.process_thread = threading.Thread(target=self.run_processing)
+            self.process_thread.daemon = True
+            self.process_thread.start()
+        except Exception as e:
+            logging.error(f"on_copy_requestedでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"DragDropWindow on_copy_requestedでエラー: {e}\n{traceback.format_exc()}")
+            QMessageBox.critical(self, "エラー", f"ファイルコピー処理中にエラーが発生しました: {e}")
 
-        # ファイルをコピー
-        copied_files = self.file_manager.copy_files(files)
-        if not copied_files:
-            QMessageBox.warning(self, "エラー", "ファイルのコピーに失敗しました")
-            return
-            
-        # コピー後にリストをクリア
-        self.file_list_widget.clear_files()
-        
-        # ローディング画面に切り替え
-        self.stacked_widget.setCurrentIndex(1)
-        
-        # バックグラウンドスレッドで処理を実行
-        self.process_thread = threading.Thread(target=self.run_processing)
-        self.process_thread.daemon = True
-        self.process_thread.start()
-    
     def run_processing(self):
-        """ バックグラウンドでの処理実行 """
         try:
             import main
             main.main(result_data_file=self.result_folder_path)
             from PySide6.QtCore import QMetaObject, Qt, Q_ARG
             QMetaObject.invokeMethod(self, "show_completion", Qt.QueuedConnection)
         except Exception as e:
-            from PySide6.QtCore import QMetaObject, Qt, Q_ARG
-            QMetaObject.invokeMethod(self, "show_error", Qt.QueuedConnection, Q_ARG(str, str(e)))
-    
+            logging.error(f"run_processingでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"DragDropWindow run_processingでエラー: {e}\n{traceback.format_exc()}")
+            self.show_error(str(e))
+
     @Slot()
     def show_completion(self):
         """ 処理完了画面を表示する """
@@ -126,9 +125,12 @@ class DragDropWindow(QWidget):
     
     @Slot(str)
     def show_error(self, error_message):
-        """ エラーメッセージを表示し、メイン画面に戻る """
-        self.stacked_widget.setCurrentIndex(0)
-        QMessageBox.critical(self, "エラー", f"処理中にエラーが発生しました:\n{error_message}")
+        try:
+            self.stacked_widget.setCurrentIndex(0)
+            QMessageBox.critical(self, "エラー", f"処理中にエラーが発生しました:\n{error_message}")
+        except Exception as e:
+            logging.error(f"show_errorでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"DragDropWindow show_errorでエラー: {e}\n{traceback.format_exc()}")
     
     def on_completion_close(self):
         """ 完了画面の閉じるボタンがクリックされた時の処理 """

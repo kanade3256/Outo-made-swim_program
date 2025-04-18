@@ -1,4 +1,7 @@
 import os
+import logging
+import traceback
+from module.send_message import send_slack_message
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 from PySide6.QtCore import Qt, Signal
 from GUI.styles.stylesheet import MAIN_WINDOW
@@ -24,7 +27,7 @@ class HomeWindow(QWidget):
         # タイトルラベル
         title_label = QLabel(APP_NAME)
         title_label.setAlignment(Qt.AlignCenter)
-        title_label.setStyleSheet("""
+        title_label.setStyleSheet("""        
             font-size: 36px;
             font-weight: bold;
             color: #2c3e50;
@@ -34,7 +37,7 @@ class HomeWindow(QWidget):
         # サブタイトルラベル
         subtitle_label = QLabel("水泳競技プログラム自動作成支援ツール")
         subtitle_label.setAlignment(Qt.AlignCenter)
-        subtitle_label.setStyleSheet("""
+        subtitle_label.setStyleSheet("""        
             font-size: 18px;
             color: #34495e;
             margin-bottom: 40px;
@@ -44,7 +47,7 @@ class HomeWindow(QWidget):
         start_button = QPushButton("プログラム製作を開始する")
         start_button.setCursor(Qt.PointingHandCursor)
         start_button.setMinimumHeight(50)
-        start_button.setStyleSheet("""
+        start_button.setStyleSheet("""        
             QPushButton {
                 background-color: #3498db;
                 border: none;
@@ -80,9 +83,17 @@ class HomeWindow(QWidget):
         self.setLayout(layout)
 
     def on_start_button_clicked(self):
-        """スタートボタンがクリックされたらシグナルを発行（保存先パス付き）"""
-        folder = self.get_selected_folder()
-        self.switch_to_drag_drop.emit(folder)
+        try:
+            folder = self.get_selected_folder()
+            self.switch_to_drag_drop.emit(folder)
+        except Exception as e:
+            logging.error(f"HomeWindow on_start_button_clickedでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"HomeWindow on_start_button_clickedでエラー: {e}\n{traceback.format_exc()}")
 
     def get_selected_folder(self):
-        return self.folder_selector.get_folder_path()
+        try:
+            return self.folder_selector.get_folder_path()
+        except Exception as e:
+            logging.error(f"HomeWindow get_selected_folderでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"HomeWindow get_selected_folderでエラー: {e}\n{traceback.format_exc()}")
+            return ""

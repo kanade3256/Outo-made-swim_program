@@ -7,6 +7,9 @@
 import pandas as pd
 import os
 import jaconv
+import logging
+import traceback
+from module.send_message import send_slack_message
 
 def normalize_text(text):
     """
@@ -43,15 +46,19 @@ def convert_to_time_format(num):
         return f"{seconds:.2f}"
 
 if __name__ == "__main__":
-    input_folder = "input_data_folder"
-    input_csv = os.path.join(input_folder, "merged_output.csv")
-    output_csv = os.path.join(input_folder, "merged_output_converted.csv")
-    df = pd.read_csv(input_csv, encoding="utf-8")
-    df = df.applymap(normalize_text)
-    column_names = ["200IM", "200Ba", "200Br", "200Fly", "200Fr", "50Ba", "50Br", "50Fly", "50Fr", 
-                    "400IM", "400Fr", "100Ba", "100Br", "100Fly", "100Fr"]
-    for col in column_names:
-        if col in df.columns:
-            df[col] = df[col].apply(convert_to_time_format)
-    df.to_csv(output_csv, index=False, encoding="utf-8")
-    print("CSVファイルの変換が完了しました。")
+    try:
+        input_folder = "input_data_folder"
+        input_csv = os.path.join(input_folder, "merged_output.csv")
+        output_csv = os.path.join(input_folder, "merged_output_converted.csv")
+        df = pd.read_csv(input_csv, encoding="utf-8")
+        df = df.applymap(normalize_text)
+        column_names = ["200IM", "200Ba", "200Br", "200Fly", "200Fr", "50Ba", "50Br", "50Fly", "50Fr", 
+                        "400IM", "400Fr", "100Ba", "100Br", "100Fly", "100Fr"]
+        for col in column_names:
+            if col in df.columns:
+                df[col] = df[col].apply(convert_to_time_format)
+        df.to_csv(output_csv, index=False, encoding="utf-8")
+        logging.info("CSVファイルの変換が完了しました。")
+    except Exception as e:
+        logging.error(f"DataConvert.pyの__main__実行時にエラー: {e}", exc_info=True)
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"DataConvert.pyの__main__実行時にエラー: {e}\n{traceback.format_exc()}")

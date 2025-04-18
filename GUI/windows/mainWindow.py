@@ -1,4 +1,7 @@
 import os
+import logging
+import traceback
+from module.send_message import send_slack_message
 from PySide6.QtWidgets import QMainWindow, QStackedWidget
 from PySide6.QtCore import Qt
 from GUI.styles.stylesheet import MAIN_WINDOW
@@ -37,15 +40,23 @@ class MainWindow(QMainWindow):
         self.drag_drop_page = None
 
     def switch_to_home(self):
-        self.stacked_widget.setCurrentIndex(0)
+        try:
+            self.stacked_widget.setCurrentIndex(0)
+        except Exception as e:
+            logging.error(f"MainWindow switch_to_homeでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"MainWindow switch_to_homeでエラー: {e}\n{traceback.format_exc()}")
 
     def switch_to_drag_drop(self, result_folder_path):
-        # 既存のDragDropWindowがあれば削除
-        if self.drag_drop_page:
-            self.stacked_widget.removeWidget(self.drag_drop_page)
-            self.drag_drop_page.deleteLater()
-        # 新しいDragDropWindowを生成し、保存先パスを渡す
-        self.drag_drop_page = DragDropWindow(result_folder_path)
-        self.drag_drop_page.switch_to_home.connect(self.switch_to_home)
-        self.stacked_widget.addWidget(self.drag_drop_page)
-        self.stacked_widget.setCurrentWidget(self.drag_drop_page)
+        try:
+            # 既存のDragDropWindowがあれば削除
+            if self.drag_drop_page:
+                self.stacked_widget.removeWidget(self.drag_drop_page)
+                self.drag_drop_page.deleteLater()
+            # 新しいDragDropWindowを生成し、保存先パスを渡す
+            self.drag_drop_page = DragDropWindow(result_folder_path)
+            self.drag_drop_page.switch_to_home.connect(self.switch_to_home)
+            self.stacked_widget.addWidget(self.drag_drop_page)
+            self.stacked_widget.setCurrentWidget(self.drag_drop_page)
+        except Exception as e:
+            logging.error(f"MainWindow switch_to_drag_dropでエラー: {e}", exc_info=True)
+            send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"MainWindow switch_to_drag_dropでエラー: {e}\n{traceback.format_exc()}")
