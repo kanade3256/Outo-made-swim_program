@@ -267,7 +267,7 @@ def main(result_data_file=None, input_data_file=None, merged_csv_data_file=None,
             ids = get_player_id(merged_csv_data_file, (stroke, distance), category="mixed")
             if not ids:
                 logger.warning(f"イベント {stroke}{distance} のIDデータが見つかりません")
-                send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"イベント {stroke}{distance} のIDデータが見つかりません。")
+                # send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"イベント {stroke}{distance} のIDデータが見つかりません。")
                 failed_events += 1
                 continue
 
