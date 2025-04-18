@@ -2,6 +2,7 @@ import os
 from PySide6.QtWidgets import QWidget, QVBoxLayout, QPushButton, QLabel
 from PySide6.QtCore import Qt, Signal
 from GUI.styles.stylesheet import MAIN_WINDOW
+from GUI.components.select_folder_dialog import SelectFolderDialogWidget
 from dotenv import load_dotenv
 
 # 環境変数から設定を読み込む
@@ -9,8 +10,8 @@ load_dotenv()
 APP_NAME = os.getenv("APP_NAME", "AquaProgrammer")  # デフォルト値として"AquaProgrammer"を設定
 
 class HomeWindow(QWidget):
-    # 画面遷移用のシグナル
-    switch_to_drag_drop = Signal()
+    # 画面遷移用のシグナル（保存先パスを渡せるように変更）
+    switch_to_drag_drop = Signal(str)
     
     def __init__(self, parent=None):
         super().__init__(parent)
@@ -63,11 +64,15 @@ class HomeWindow(QWidget):
         
         # ボタンクリック時のイベント接続
         start_button.clicked.connect(self.on_start_button_clicked)
-        
+
+        # フォルダー選択ウィジェットの追加
+        self.folder_selector = SelectFolderDialogWidget(self)
+
         # レイアウトにウィジェットを追加
         layout.addStretch(1)  # 上部に余白を作る
         layout.addWidget(title_label)
         layout.addWidget(subtitle_label)
+        layout.addWidget(self.folder_selector)  # フォルダー選択を追加
         layout.addStretch(1)  # 中央に余白を作る
         layout.addWidget(start_button)
         layout.addStretch(2)  # 下部に余白を作る
@@ -75,5 +80,9 @@ class HomeWindow(QWidget):
         self.setLayout(layout)
 
     def on_start_button_clicked(self):
-        """スタートボタンがクリックされたらシグナルを発行"""
-        self.switch_to_drag_drop.emit()
+        """スタートボタンがクリックされたらシグナルを発行（保存先パス付き）"""
+        folder = self.get_selected_folder()
+        self.switch_to_drag_drop.emit(folder)
+
+    def get_selected_folder(self):
+        return self.folder_selector.get_folder_path()

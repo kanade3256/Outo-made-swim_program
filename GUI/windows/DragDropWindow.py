@@ -9,20 +9,18 @@ from GUI.components.loadingWidget import LoadingWidget
 from GUI.components.completionWidget import CompletionWidget
 from GUI.styles.stylesheet import MAIN_WINDOW
 from dotenv import load_dotenv
-
 load_dotenv()
-INPUT_DATA_FOLDER = os.getenv("INPUT_DATA_FILE")
+INPUT_DATA_FOLDER = os.getenv("INPUT_DATA_FILE", "input_data_folder")
 
 class DragDropWindow(QWidget):
     # 画面遷移用のシグナル
     switch_to_home = Signal()
     
-    def __init__(self, parent=None):
+    def __init__(self, result_folder_path, parent=None):
         super().__init__(parent)
-
-        # ファイル管理クラス
-        self.file_manager = FileManager(os.path.join(os.getcwd(), INPUT_DATA_FOLDER))
-        self.file_manager.reset_folder()
+        self.result_folder_path = result_folder_path  # 出力先パス
+        self.input_folder_path = INPUT_DATA_FOLDER    # 入力先パス
+        self.file_manager = FileManager(self.input_folder_path)  # 入力用フォルダにコピー
 
         # スタックウィジェットの作成（ドラッグドロップ画面、ローディング画面、完了画面の切り替え用）
         self.stacked_widget = QStackedWidget(self)
@@ -38,7 +36,7 @@ class DragDropWindow(QWidget):
         # 戻るボタンの作成
         self.back_button = QPushButton("戻る")
         self.back_button.setCursor(Qt.PointingHandCursor)
-        self.back_button.setStyleSheet("""
+        self.back_button.setStyleSheet("""\
             QPushButton {
                 background-color: #95a5a6;
                 border: none;
@@ -113,18 +111,13 @@ class DragDropWindow(QWidget):
     def run_processing(self):
         """ バックグラウンドでの処理実行 """
         try:
-            # main.pyの処理を実行
             import main
-            main.main()
-            
-            # UI操作は必ずメインスレッドから行う
+            main.main(result_data_file=self.result_folder_path)
             from PySide6.QtCore import QMetaObject, Qt, Q_ARG
             QMetaObject.invokeMethod(self, "show_completion", Qt.QueuedConnection)
         except Exception as e:
-            # エラー発生時の処理
             from PySide6.QtCore import QMetaObject, Qt, Q_ARG
-            QMetaObject.invokeMethod(self, "show_error", Qt.QueuedConnection, 
-                                    Q_ARG(str, str(e)))
+            QMetaObject.invokeMethod(self, "show_error", Qt.QueuedConnection, Q_ARG(str, str(e)))
     
     @Slot()
     def show_completion(self):

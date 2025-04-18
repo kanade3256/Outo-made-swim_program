@@ -1,5 +1,9 @@
 from dataclasses import dataclass, field
 from typing import Dict, Tuple
+import logging
+import traceback
+import os
+from module.send_message import send_slack_message
 
 # --- 1. 種目定義 ---
 
@@ -69,25 +73,21 @@ class PlayerData:
 # --- 3. 使い方 ---
 
 if __name__ == "__main__":
-    # 例: 女性選手
-    player_f = PlayerData(
-        id=1, name="田中花子", hurigana="たなかはなこ", team="A", grade=3, sex="female"
-    )
-    # IM200 のタイムを更新
-    player_f.set_time("im", 200, "2:05.3")
-    # 女子フリーなので 800m がある
-    player_f.set_time("fr", 800, "9:12.5")
-
-    print(f"{player_f.name} のIM200タイム: {player_f.times[('im', 200)]}")
-    print(f"{player_f.name} のFR800タイム: {player_f.times[('fr', 800)]}")
-    # 男子向けの 1500m はキーがないのでエラーになる
-
-    # 例: 男性選手
-    player_m = PlayerData(
-        id=2, name="佐藤太郎", hurigana="さとうたろう", team="B", grade=2, sex="male"
-    )
-    # 男子フリーなので 1500m がある
-    player_m.set_time("fr", 1500, "16:45.8")
-
-    # print(f"{player_m.name} のFR1500タイム: {player_m.times[('fr', 1500)]}")
-    print(player_m)
+    try:
+        # 例: 女性選手
+        player_f = PlayerData(
+            id=1, name="田中花子", hurigana="たなかはなこ", team="A", grade=3, sex="female"
+        )
+        player_f.set_time("im", 200, "2:05.3")
+        player_f.set_time("fr", 800, "9:12.5")
+        logging.info(f"{player_f.name} のIM200タイム: {player_f.times[('im', 200)]}")
+        logging.info(f"{player_f.name} のFR800タイム: {player_f.times[('fr', 800)]}")
+        # 男子向けの 1500m はキーがないのでエラーになる
+        player_m = PlayerData(
+            id=2, name="佐藤太郎", hurigana="さとうたろう", team="B", grade=2, sex="male"
+        )
+        player_m.set_time("fr", 1500, "16:45.8")
+        logging.info(player_m)
+    except Exception as e:
+        logging.error(f"player_data.pyのテスト実行中にエラー: {e}", exc_info=True)
+        send_slack_message(os.getenv("APP_NAME", "AquaProgrammer"), f"player_data.pyのテスト実行中にエラー: {e}\n{traceback.format_exc()}")

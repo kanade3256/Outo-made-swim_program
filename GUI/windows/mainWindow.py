@@ -2,6 +2,7 @@ import os
 from PySide6.QtWidgets import QMainWindow, QStackedWidget
 from PySide6.QtCore import Qt
 from GUI.styles.stylesheet import MAIN_WINDOW
+from GUI.windows.DragDropWindow import DragDropWindow
 from dotenv import load_dotenv
 
 # 環境変数から設定を読み込む
@@ -29,22 +30,22 @@ class MainWindow(QMainWindow):
         self.home_page = None
         self.drag_drop_page = None
         
-    def setup_pages(self, home_page, drag_drop_page):
-        """異なる画面をスタックに追加する"""
+    def setup_pages(self, home_page):
         self.home_page = home_page
-        self.drag_drop_page = drag_drop_page
-        
-        # スタックにページを追加
         self.stacked_widget.addWidget(self.home_page)
-        self.stacked_widget.addWidget(self.drag_drop_page)
-        
-        # 最初はホーム画面を表示
         self.stacked_widget.setCurrentIndex(0)
-        
+        self.drag_drop_page = None
+
     def switch_to_home(self):
-        """ホーム画面に切り替え"""
         self.stacked_widget.setCurrentIndex(0)
-        
-    def switch_to_drag_drop(self):
-        """ドラッグ&ドロップ画面に切り替え"""
-        self.stacked_widget.setCurrentIndex(1)
+
+    def switch_to_drag_drop(self, result_folder_path):
+        # 既存のDragDropWindowがあれば削除
+        if self.drag_drop_page:
+            self.stacked_widget.removeWidget(self.drag_drop_page)
+            self.drag_drop_page.deleteLater()
+        # 新しいDragDropWindowを生成し、保存先パスを渡す
+        self.drag_drop_page = DragDropWindow(result_folder_path)
+        self.drag_drop_page.switch_to_home.connect(self.switch_to_home)
+        self.stacked_widget.addWidget(self.drag_drop_page)
+        self.stacked_widget.setCurrentWidget(self.drag_drop_page)
