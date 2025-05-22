@@ -14,7 +14,7 @@ from module.event_utils import EVENT_NAMES, parse_event_name
 def create_player_from_row(row: list[str]) -> PlayerData:
     try:
         player = PlayerData(
-            id=row[0],
+            id=row[-1],
             name=row[1],
             hurigana=row[2].replace("\u3000", " "),
             team=row[3],
